@@ -4,7 +4,7 @@
 \begin{localsize}{11}
 \section*{\centering Abstract}
 
-Plant cell wall biomass is composed of a range of different types of carbon-based compounds. The proportions of the primary carbon types affects how cell walls decompose, an important ecosystem process because their decay contributes to soil carbon. Traditional methods of calculating these components involve wet chemistry methods that can be costly and degrade the environment. Thermogravimetric analysis is an alternative method, already used by biofuel researchers, that involves pyrolysing dry, ground plant litter and estimating contribution of carbon components from a resulting mass decay curve. Because carbon types break down relatively independently, we can apply a mixture model to the multi-peaked rate of mass loss curve to identify mass loss of each carbon component. The \verb|mixchar| package conducts this peak separation analysis in an open-source and reproducible way using R. \verb|mixchar| has been tested over a range of plant litter types, composed primarily of the fiber components: hemicellulose, cellulose, and lignin.
+Plant cell wall biomass is composed of a range of different types of carbon-based compounds. The proportions of the primary carbon types affect how cell walls decompose, an important ecosystem process because their decay contributes to soil carbon. Traditional methods of calculating these components involve wet chemistry methods that can be costly and degrade the environment. Thermogravimetric analysis is an alternative method, already used by biofuel researchers, that involves pyrolysing dry, ground plant litter and estimating contribution of carbon components from a resulting mass decay curve. Because carbon types break down relatively independently, we can apply a mixture model to the multi-peaked rate of mass loss curve to identify mass loss of each carbon component. The \verb|mixchar| package conducts this peak separation analysis in an open-source and reproducible way using R. \verb|mixchar| has been tested over a range of plant litter types, composed primarily of the fiber components: hemicellulose, cellulose, and lignin.
 
 \end{localsize}
 
@@ -12,5 +12,5 @@ Plant cell wall biomass is composed of a range of different types of carbon-base
 This manuscript is in review at the Journal of Open Research Software and is presented in that format here. 
 
 \newpage
-\Sexpr{knitr::knit_child('manuscript.Rnw')}
-% \includepdf[page={1-18}]{chapters/Chapter4_mixchar/manuscript.pdf} 
+% \Sexpr{knitr::knit_child('manuscript.Rnw')}
+\includepdf[page={1-18}]{chapters/Chapter4_mixchar/manuscript.pdf} 
