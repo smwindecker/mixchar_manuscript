@@ -1,0 +1,30 @@
+Type: Compendium
+Package: mixchar_manuscript
+Title: mixchar: An R package for the deconvolution of thermal decay curves
+Version: 1.0.1
+Authors@R: c(
+    person(given = "Saras",
+           family = "Windecker",
+           role = c("aut", "cre"),
+           email = "saras.windecker@gmail.com",
+           comment = c(ORCID = "0000-0002-4870-8353")),
+    person(given = "Peter",
+           family = "Vesk",
+           role = c("aut")),
+    person(given = "Stacey",
+           family = "Trevathan-Tackett",
+           role = c("aut")),
+    person(given = "Nick",
+           family = "Golding",
+           role = c("aut"))
+           )
+Description: A repository for the manuscript "mixchar: An R package for the deconvolution of thermal decay curves" associated with the R package mixchar. 
+License: MIT + file LICENSE
+Depends: 
+    knitr,
+    mixchar,
+    tinytex
+Remotes: 
+    smwindecker/mixchar
+Encoding: UTF-8
+LazyData: true
