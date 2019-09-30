@@ -33,7 +33,7 @@ png('figs/deconvolved.png')
 plot(output_juncus, bw = FALSE)
 dev.off()
 
-knitr::knit('manuscript.Rnw', 'manuscript.tex')
-tinytex::pdflatex('manuscript.tex', 
-                  pdf_file = 'manuscript.pdf')
+knitr::knit('ms/manuscript.Rnw', 'ms/manuscript.tex')
+tinytex::pdflatex('ms/manuscript.tex', 
+                  pdf_file = 'ms/manuscript.pdf')
 
