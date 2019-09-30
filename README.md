@@ -1,6 +1,6 @@
-## Repository for 
+## Repository for "mixchar: An R package for the deconvolution of thermal decay curves"
 
-This repository contains all the code used in the manuscript associated with the R packaged (mixchar)[https://github.com/smwindecker/mixchar]. 
+This repository contains all the code used in the manuscript associated with the R packaged [mixchar](https://github.com/smwindecker/mixchar). 
 
 ## Running the code
 
