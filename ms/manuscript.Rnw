@@ -1,6 +1,6 @@
 %% Journal of Open Research Software Latex template -- Created By Stephen Bonner and John Brennan, Durham Universtiy, UK.
 
-\documentclass{jors}
+\documentclass{ms/jors}
 
 %% Set the header information
 \pagestyle{fancy}
@@ -376,7 +376,7 @@ The authors would like to acknowledge the generous support we received from the 
 The authors declare that they have no competing interests.
 
 \section*{References}
-\bibliography{bibliography_papers,bibliography_packages}
+\bibliography{ms/bibliography_papers,ms/bibliography_packages}
 
 \vspace{2cm}
 
