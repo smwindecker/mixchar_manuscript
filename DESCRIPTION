@@ -24,7 +24,5 @@ Depends:
     knitr,
     mixchar,
     tinytex
-Remotes: 
-    smwindecker/mixchar
 Encoding: UTF-8
 LazyData: true
