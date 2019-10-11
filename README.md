@@ -1,4 +1,4 @@
-## Repository for "mixchar: An R package for the deconvolution of thermal decay curves"
+## mixchar: An R package for the deconvolution of thermal decay curves
 
 This repository contains all the code used in the manuscript associated with the R packaged [mixchar](https://github.com/smwindecker/mixchar). 
 
@@ -66,3 +66,5 @@ and was then pushed to [dockerhub](https://cloud.docker.com/u/traitecoevo/reposi
 ## Problems?
 
 If you have any problems getting the workflow to run please create an [issue](https://github.com/smwindecker/mixchar_manuscript/issues) and I will endevour to remedy it ASAP.
+
+Special thank you to [James Camac](https://github.com/jscamac) and [Daniel Falster](https://github.com/dfalster) for assistance in setting up this reproducible workflow. 
