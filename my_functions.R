@@ -445,28 +445,28 @@ legend_species <- function (spname, plant_part, y) {
 
 test_plots <- function () {
 
-  t.testudinum <- process_test_samples('data/Tt_leaf.txt')
+  t.testudinum <- process_test_samples('../data/Tt_leaf.txt')
   t.testudinum_output <- deconvolve(t.testudinum)
 
-  z.marina_rh <- process_test_samples('data/Zm_rhizome.txt')
+  z.marina_rh <- process_test_samples('../data/Zm_rhizome.txt')
   z.marina_rh_output <- deconvolve(z.marina_rh)
 
-  z.marina_ro <- process_test_samples('data/Zm_root.txt')
+  z.marina_ro <- process_test_samples('../data/Zm_root.txt')
   z.marina_ro_output <- deconvolve(z.marina_ro)
 
   par(oma = c(4, 3, 0, 1), mar = c(2, 2, 1, 1), mfrow = c(2, 2))
   
   deconvolve_plot(t.testudinum_output)
   text(170, max(t.testudinum_output$data$deriv), '(a)', cex = 1.5)
-  legend_species('Thalassia testudinum', 'leaves', max(t.testudinum_output$data$deriv))
+  # legend_species('Thalassia testudinum', 'leaves', max(t.testudinum_output$data$deriv))
 
   deconvolve_plot(z.marina_rh_output)
   text(170, max(z.marina_rh_output$data$deriv), '(b)', cex = 1.5)
-  legend_species('Zostera marina', 'rhizome', max(z.marina_rh_output$data$deriv))
+  # legend_species('Zostera marina', 'rhizome', max(z.marina_rh_output$data$deriv))
 
   deconvolve_plot(z.marina_ro_output)
   text(170, max(z.marina_ro_output$data$deriv), '(c)', cex = 1.5)
-  legend_species('Zostera marina', 'root', max(z.marina_ro_output$data$deriv))
+  # legend_species('Zostera marina', 'root', max(z.marina_ro_output$data$deriv))
 
   plot(1, type = 'n', axes = FALSE, xlab = '', ylab = '')
   
@@ -496,7 +496,7 @@ test_plots <- function () {
 
 e.rad <- function () {
 
-  e.radiata <- process_test_samples('data/Er_blade.txt')
+  e.radiata <- process_test_samples('../data/Er_blade.txt')
   e.radiata_output <- deconvolve(e.radiata,
                                  lower_temp = 150,
                                  upper_temp = 600)
@@ -520,7 +520,7 @@ e.rad <- function () {
                                 lower_temp = 150,
                                 upper_temp = 600)
 
-  layout(matrix(c(1,2,3,3), nrow = 2, ncol = 2, byrow = TRUE), heights = c(0.8, 0.2))
+  layout(matrix(c(1,2,3,3), nrow = 2, ncol = 2, byrow = TRUE), heights = c(0.6, 0.2))
   par(oma = c(2, 3, 0, 1), mar = c(1, 2, 1, 0))
   
   x <- e.radiata_output
