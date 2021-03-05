@@ -1,7 +1,7 @@
 %% Journal of Open Research Software Latex template -- Created By Stephen Bonner and John Brennan, Durham Universtiy, UK.
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{josr}[2016/03/08 Journal Of Open Software Research]
+\ProvidesClass{jors}[2016/03/08 Journal Of Open Software Research]
 
 %% Article options
 \DeclareOption{12pt}{
@@ -18,7 +18,7 @@
 
 %% Fallback
 \DeclareOption*{
-  \ClassWarning{josr}{Unknown option '\CurrentOption'}
+  \ClassWarning{jors}{Unknown option '\CurrentOption'}
 }
 
 
