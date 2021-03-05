@@ -46,6 +46,13 @@
 <<echo = FALSE>>=
 knitr::opts_chunk$set(size = 'footnotesize',
                       fig.pos = 'H')
+library(mixchar)
+source('../my_functions.R')
+
+deriv_juncus <- process(juncus, init_mass = 18.96,
+               temp = 'temp_C', mass_loss = 'mass_loss')
+
+output_juncus <- deconvolve(deriv_juncus)
 @
 
 {\bf Software paper for submission to the Journal of Open Research Software} \\
@@ -67,29 +74,29 @@ mixchar: An R package for the deconvolution of thermal decay curves
 
 \section*{Paper Author Roles and Affiliations}
 1. Research Fellow, School of BioSciences, University of Melbourne, Parkville VIC 3010, Australia \\
-2. Associate Professor, School of BioSciences, University of Melbourne, Parkville VIC 3010, Australia \\
+2. Professor, School of BioSciences, University of Melbourne, Parkville VIC 3010, Australia \\
 3. Research Fellow, Deakin University, Geelong, Centre for Integrative Ecology, School of Life and Environmental Sciences, Burwood VIC 3125, Australia \\
-4. Research Fellow, School of BioSciences, University of Melbourne, Parkville VIC 3010, Australia
+4. Associate Professor, Curtin University, Faculty of Health Sciences, Curtin School of Population Health, Perth WA 6102 Australia 
 
 \section*{Abstract}
-Plant cell wall biomass is composed of a range of different types of carbon-based compounds. The proportions of the primary carbon types affects how cell walls decompose, an important ecosystem process because their decay contributes to soil carbon. Traditional methods of calculating these components involve wet chemistry methods that can be costly and degrade the environment. Thermogravimetric analysis is an alternative method, already used by biofuel researchers, that involves pyrolysing dry, ground plant litter and estimating contribution of carbon components from a resulting mass decay curve. Because carbon types break down relatively independently, we can apply a mixture model to the multi-peaked rate of mass loss curve to identify mass loss of each carbon component. The \verb|mixchar| package conducts this peak separation analysis in an open-source and reproducible way using R. \verb|mixchar| has been tested over a range of plant litter types, composed primarily of the fiber components: hemicellulose, cellulose, and lignin.
+Plant cell wall biomass is composed of a range of different types of carbon-based compounds. The proportions of the primary carbon types affect how cell walls decompose, an important ecosystem process because their decay contributes to soil carbon. Traditionally, these components are estimated using wet chemistry methods that can be costly and degrade the environment. Thermogravimetric analysis is an alternative method, already used by biofuel researchers, that involves pyrolysing dry, ground plant litter and estimating contribution of carbon components from a resulting mass decay curve. Because carbon types break down relatively independently, we can apply a mixture model to the multi-peaked rate of mass loss curve to identify mass loss of each carbon component. The \verb|mixchar| package conducts this peak separation analysis in an open-source and reproducible way using R. \verb|mixchar| has been tested over a range of plant litter types, composed primarily of the fiber components: hemicellulose, cellulose, and lignin.
 
 \section*{Keywords}
 biofuel; carbon; decomposition; Fraser-Suzuki; kinetics; mixture model; plant traits; thermogravimetric analysis
 
 \section*{Introduction}
-Plant cell wall biomass is composed of a range of different types of carbon-based compounds \citep{chen2017,orfao2001,hu2016}. We can use the relative proportion of these carbon components to understand species characteristics, such as litter decomposition \citep{cornwell2008}. Traditional methods for calculating lignocellulosic biomass involve wet chemistry assays for carbon component analysis \citep{fukushima2011} through the use of sulfuric acid and acetic anhydride, among other chemicals. These chemicals, however, can adversely impact the environment and lead to loss of lignocellulose and other compounds \citep{hatfield2005}. Thermogravimetric analysis (TGA) is an alternative method, already in use among biofuel researchers, to approximate these plant fiber compounds \citep{hu2016,cheng2015}. In this method, we use mass loss data obtained by heating a biomass sample in an $N_2$ environment, termed pyrolysis, to estimate the different carbon components.\\
+Plant cell wall biomass is composed of a range of different types of carbon-based compounds \citep{chen2017,orfao2001,hu2016}. We can use the relative proportion of these carbon components to understand species characteristics, such as litter decomposition \citep{cornwell2008}. Traditional methods for estimating carbon components, particularly lignocellulosic biomass, involve wet chemistry assays \citep{fukushima2011} that use sulfuric acid and acetic anhydride, among other chemicals. These chemicals, however, can adversely impact the environment and lead to loss of lignocellulose and other compounds \citep{hatfield2005}. Thermogravimetric analysis (TGA) is an alternative method, already in use among biofuel researchers, to approximate these proportions of these compounds in plants \citep{hu2016,cheng2015}. In this method, we use mass loss data obtained by heating a biomass sample in an $N_2$ environment, termed pyrolysis, to estimate the proportion of different carbon components in a sample.\\
 
-Mass loss during complete pyrolysis is the sum of the degradation of the main components of the sample, often simplified to the three main components of lignocellulose: hemicelluloses, cellulose, and lignin \citep{perejon2011,orfao2001,muller-hagedorn2007}. The rate of mass loss is generally a multi-peaked curve, that can then be mathematically separated into its constituent parts with a mixture model, in a process termed `deconvolution' \citep{peel2000,kauppinen1981}. The component peaks identified by the mixture model represent the proportion of initial mass of each component lost during pyrolysis. The integral, or area under the peak, therefore gives us an estimate of the proportion of that component in the overall sample. A number of studies have validated this approach, using thermogravimetric analysis with deconvolution, with studies comparing its estimates of carbon components to those achieved with wet chemistry measurements \citep{yang2006}. Other researchers have also previously used this method to identify plant species' recalcitrance, such as in marine and coastal macrophytes \citep{trevathan-tackett2015}, and in eucalyptus trees \citep{orfao2001}.\\
+Mass loss during complete pyrolysis is the sum of the degradation of the main components of the sample, often simplified to the three main components of lignocellulose: hemicelluloses, cellulose, and lignin \citep{perejon2011,orfao2001,muller-hagedorn2007}. The rate of mass loss is generally a multi-peaked curve, which can be mathematically separated into its constituent parts with a mixture model, in a process termed `deconvolution' \citep{peel2000,kauppinen1981}. The component peaks identified by the mixture model represent the proportion of initial mass lost by each component during pyrolysis. The integral, or area under the curve, of these peaks therefore gives us an estimate of the proportion of each component in the original sample. Carbon component estimation from deconvolution of thermogravimetric loss curves has been validated with estimates achieved with wet chemistry measurements \citep{yang2006}.\\
 
-For the most part, researchers have used commercial software to deconvolve the rate of mass loss curve \citetext{for example OriginPro \citealp{chen2017}, PeakFit \citealp{perejon2011}, Fityk \citealp{perejon2011}, or Datafit \citealp{cheng2015}}. The majority of proprietary software employ point-and-click interfaces that prevent independent replication of the deconvolution analysis. The inability of other researchers to reproduce readily another's experimental results using this software, a guiding principle of functional trait measurement \citep{perez-harguindeguy2013}, might in part explain why thermogravimetric analysis has not been widely adopted by functional ecologists.\\
+Most researchers who conduct thermogravimetric analysis use commercial software to deconvolve the rate of mass loss curves \citetext{for example OriginPro \citealp{chen2017}, PeakFit \citealp{perejon2011}, Fityk \citealp{perejon2011}, or Datafit \citealp{cheng2015}}. However, the majority of these proprietary software employ point-and-click interfaces that hinder independent replication of the deconvolution analysis. The inability to reproduce readily others' experimental results using these software, a guiding principle of functional trait measurement \citep{perez-harguindeguy2013}, might in part explain why thermogravimetric analysis has not been widely adopted by functional ecologists despite its proven promise \citetext{such as in marine and coastal macrophytes \citealp{trevathan-tackett2015}, and in eucalyptus trees \citealp{orfao2001}}.\\ 
 
-The \verb|mixchar| package in R is an open-source tool for the deconvolution of thermal decay curves from thermogravimetric analysis. Although the nonlinear mixture model used for peak separation at the core of this package could be used for many different purposes, our \verb|mixchar| package provides specific guidelines for using thermal decay curve analysis to estimate carbon components. Detailed vignettes and several default plotting options are included in \verb|mixchar| so that researchers interested in adopting this method can readily do so for the purpose of estimating carbon components in plant biomass samples.
+The \verb|mixchar| package in R is an open-source tool for the deconvolution of thermal decay curves from thermogravimetric analysis. This tool improves upon existing software by making implicit mixture model choices, such as starting values and number of peaks to estimate, programmatic and transparent. Although the nonlinear mixture model used for peak separation at the core of this package could be used for many different purposes, our \verb|mixchar| package provides specific guidelines for using thermal decay curve analysis to estimate carbon components. Detailed vignettes and several default plotting options are included in \verb|mixchar| so that researchers interested in adopting this method can readily do so for the purpose of estimating carbon components in plant biomass samples.
 
 \section*{Implementation and architecture}
 
 \textbf{\textit{Litter collection and preparation}}\\
-We collected the litter for development of this package from three freshwater wetlands surrounding Melbourne, Victoria (sites within 60 km of -37.455, 144.985). We then dried the samples as quickly as possible after collection to ensure our component estimates were an accurate representation of the original composition of the litter samples we collected. In the field, we placed the plant litter collected for this analysis in moist plastic bags and stored them in dark coolers until we could transport them to the lab where they were promptly dried at 60 $^{\circ}$C for 72 hours. We ground our dry litter to \textless 40 $\mu m$ using a Retsch Centrifugal Mill ZM200. \\
+We collected the litter for development of this package from three freshwater wetlands surrounding Melbourne, Victoria (sites within 60 km of -37.455, 144.985). In the field, we placed the plant litter collected for this analysis in moist plastic bags and stored them in dark coolers until we could transport them to the lab where they were promptly dried at 60 $^{\circ}$C for 72 hours to ensure our component estimates were an accurate representation of the original composition of the litter samples we collected. We ground our dry litter to \textless 40 $\mu m$ using a Retsch Centrifugal Mill ZM200. \\
 
 We pyrolysed 10\textendash20 mg subsamples of dry, ground litter in an N$_2$ environment from 30\textendash800 $^{\circ}$C at a temperature ramp of 10 $^{\circ}$C/min using a Netzsch TGA-FTIR thermogravimetric analyser (Department of Biomedical Engineering, University of Melbourne). \\
 
@@ -97,16 +104,17 @@ We developed and tested the functions of our \verb|mixchar| package using the th
 
 <<>>=
 library(mixchar)
-head(juncus)
+head(juncus, n = 3)
 @
 
-<<echo = FALSE, fig.cap = '\\label{Fig:massloss} Mass across temperature for \\textit{Juncus amabilis}.', out.width = '.6\\linewidth', fig.align = 'center'>>=
-knitr::include_graphics('figs/mass_loss.png')
+<<echo = FALSE, fig.cap = '\\label{Fig:massloss} Mass across temperature for \\textit{Juncus amabilis}.', out.width = '.5\\linewidth', fig.align = 'center'>>=
+# knitr::include_graphics('figs/mass_loss.png')
+plot(deriv_juncus, plot_type = 'mass', cex = 1.5)
 @
 
 \textbf{\textit{Deconvolution using mixchar}}\\
 \textit{Rate of mass loss}\\
-After completing the thermogravimetric analysis, the resulting data can be loaded into R. Using \verb|mixchar|, the \verb|process| function calculates the rate of mass loss by taking the derivative of mass loss over temperature data. To do so, \verb|process()| needs the following dataset features: the initial mass of the sample, the name of the temperature data column, and the name of the mass column (mg). Since TGA-FTIR instruments can export data in variable units, the mass column can be specified either as mass loss data with the \verb|mass_loss| argument or as mass data with the \verb|mass| argument.
+After completing the thermogravimetric analysis, the resulting data can be loaded into R. Using \verb|mixchar|, the \verb|process| function calculates the rate of mass loss by taking the derivative of mass loss over temperature. The \verb|process()| function needs the following dataset features: the initial mass of the sample, the name of the temperature data column, and the name of the mass column (mg). Since TGA-FTIR instruments can export data in variable units, the mass column can be specified either as mass loss data with the \verb|mass_loss| argument or as mass data with the \verb|mass| argument.
 
 <<>>=
 deriv_juncus <- process(juncus,
@@ -117,7 +125,7 @@ deriv_juncus <- process(juncus,
 deriv_juncus
 @
 
-The \verb|process| function produces the modified dataframe, which includes the derivative thermogravimetric rate of mass loss data (DTG), the initial mass value that was supplied, and the maximum and minimum temperature values in the data. Plotting the output of the \verb|process| function yields the mass of sample across temperature curve (Fig.~\ref{Fig:massloss}) and the rate of mass loss curve (Fig.~\ref{Fig:rateloss}). The rate of mass loss is a multi-peaked curve encompassing three main phases \citep{orfao2001}:
+The \verb|process| function produces a modified dataframe, which includes the derivative thermogravimetric rate of mass loss data (DTG), the initial mass value that was supplied, and the maximum and minimum temperature values in the data. Plotting the output of the \verb|process| function yields the mass of sample across temperature curve (Fig.~\ref{Fig:massloss}) and the rate of mass loss curve (Fig.~\ref{Fig:rateloss}). The rate of mass loss is a multi-peaked curve encompassing three main phases \citep{orfao2001}:
 
 \begin{enumerate}
 	\item A short period with a pronounced peak of moisture evolution, up until approximately 120 $^{\circ}$C.
@@ -126,14 +134,15 @@ The \verb|process| function produces the modified dataframe, which includes the 
 \end{enumerate}
 
 <<echo = FALSE, fig.cap = '\\label{Fig:rateloss} Derivative thermogravimetric rate of mass loss across temperature, scaled by initial mass of sample for \\textit{Juncus amabilis}. Line segments 1, 2, and 3 represent mass loss phases.', out.width = '.6\\linewidth', fig.align = 'center'>>=
-knitr::include_graphics('figs/dtg.png')
+# knitr::include_graphics('figs/dtg.png')
+dtg_plot(juncus)
 @
 
 \textit{Subset DTG data}\\
 Since the overall DTG curve represents the loss of extractives, water, inorganic matter, and volatiles in addition to the components in which we are interested \citep{hu2016}, we isolate mass loss from our primary biomass components by subsetting the DTG data to Phase 2. The \verb|deconvolve| function defaults to temperature bounds at 120 $^{\circ}$C and 700 $^{\circ}$C, but these can be modified with the \verb|lower_temp| and \verb|upper_temp| arguments.\\
 
 \textit{Non-linear mixture model}\\
-Biomass components combust relatively independently because they do not interact very much during thermal volatilisation \citep{yang2006}. Therefore, the subsetted DTG curve can be mathematically deconvolved into constituent parts using a mixture model. The derivative rate of mass loss equation ($\frac{dm}{dT}$) can be expressed as the sum of $n$ independent reactions (Eq.~\ref{eqn:mixture_model}), as follows \citep{orfao2001}:
+Biomass components combust relatively independently because they do not interact very much during thermal volatilisation \citep{yang2006}. Therefore, the subsetted DTG curve can be mathematically deconvolved into constituent parts using a mixture model. The derivative rate of mass loss equation ($-\frac{dm}{dT}$) can be expressed as the sum of $n$ independent reactions (Eq.~\ref{eqn:mixture_model}), as follows \citep{orfao2001}:
 
 \begin{align}
 	-\frac{dm}{dT} &= \sum\limits_{i=1}^n c_i\frac{d\alpha_{i}}{dT} \label{eqn:mixture_model} \\
@@ -152,34 +161,37 @@ In order to fit the mixture model to the data, we must decide upon the shape of 
 	\frac{d\alpha_i}{dT} = h_i\ exp\bigg\{-\frac{ln2}{s_i^2}\Big[ln\Big(1 + 2s_i \frac{T - p_i}{w_i}\Big)\Big]^2\bigg\}
 \end{gather}
 
-where T is temperature ($^\circ$C), and the parameters $h_i$ ($^{\circ}C^{-1}$), $s_i$, $p_i$ ($^{\circ}$C), and $w_i$ ($^{\circ}$C) are height, skew, position, and width of the peak, respectively. In total, our model estimates 12 or 16 parameters, one for each parameter of Eq.~\ref{eqn:fs_function} for either three or four primary components.
-
-<<echo = FALSE, fig.cap = '\\label{Fig:fs_simulation} Parametric study of the Fraser-Suzuki function for deconvolution of derivative thermogravimetric biomass curves: Effect of modifying (a) height; (b) skew; (c) position; and (d) width.', out.width = '\\linewidth', fig.asp = 1>>=
-knitr::include_graphics('figs/simulation.png')
-@
+where T is temperature ($^\circ$C), and the parameters $h_i$ ($^{\circ}C^{-1}$), $s_i$, $p_i$ ($^{\circ}$C), and $w_i$ ($^{\circ}$C) are height, skew, position, and width of the peak, respectively. In total, our model estimates 12 or 16 parameters, one for each parameter of Eq.~\ref{eqn:fs_function} for either three or four primary components.\\
 
 Likelihood functions in mixture models have multiple maxima, and therefore\\
-expectation-maximisation algorithms are highly dependent on starting value selection \citep{seidel2000,seidel2000a}. The vector of starting values for the 12 or 16 estimated parameters is based on curves depicted in the literature \citep{muller-hagedorn2007} and from the results of running an identical deconvolution on pure cellulose (carboxy-methyl cellulose) and lignin (alkali lignin from Sigma Aldrich). Hemicelluloses decay in a reasonably narrow band beginning at a lower temperature \citep{muller-hagedorn2007}, so we use 270$^{\circ}$C for position and 50$^{\circ}$C for width. Linear cellulose crystals decay at a higher temperature, but decay more rapidly after peak temperatures are reached, so we set its starting position to 310$^{\circ}$C and width to 30$^{\circ}$C. Lignin typically decays beginning at a high temperature and over a wide interval \citep{chen2015}, so we begin position and width at 410$^{\circ}$C and 200$^{\circ}$C, respectively.\\
+expectation-maximisation algorithms are highly dependent on starting value selection \citep{seidel2000,seidel2000a}. The vector of starting values for the 12 or 16 estimated parameters is based on curves depicted in the literature \citep{muller-hagedorn2007} and from the results of running an identical deconvolution on pure cellulose (carboxy-methyl cellulose) and lignin (alkali lignin from Sigma Aldrich). Hemicelluloses decay in a reasonably narrow band beginning at a lower temperature \citep{muller-hagedorn2007}, so we use 270$^{\circ}$C for position and 50$^{\circ}$C for width. Linear cellulose crystals decay at a higher temperature, but decay more rapidly after peak temperatures are reached, so we set its starting position to 310$^{\circ}$C and width to 30$^{\circ}$C. Lignin typically decays beginning at a high temperature and over a wide interval \citep{chen2015}, so we begin position and width at 410$^{\circ}$C and 200$^{\circ}$C, respectively.
+
+<<echo = FALSE, fig.cap = '\\label{Fig:fs_simulation} Parametric study of the Fraser-Suzuki function for deconvolution of derivative thermogravimetric biomass curves: Effect of modifying (a) height; (b) skew; (c) position; and (d) width.', out.width = '.9\\linewidth', fig.asp = 1>>=
+# knitr::include_graphics('figs/simulation.png')
+simulate_fraser_suzuki()
+@
 
 In an effort to ensure the same starting vector would be useful across a wide variety of different samples, we employ an extra optimisation step before fitting the model. The \verb|deconvolve| function first optimises the given starting value vector with 300 restarts of the \verb|NLOPTR_LN_BOBYQA| algorithm \citep{bobyqa} with the \verb|nloptr| \citep{nloptr} package. In this way, we can set the given starting value vector so that it works properly on a wide range of samples, and at the same time the starting values we ultimately give to the model are as close as possible to the global maxima for a given dataset.\\
 
 To fit the non-linear mixture model, we send the optimised starting value vector to the \verb|nlsLM()| function in the \verb|minpack.lm| \citep{minpack.lm} package, which uses the Levenberg-Marquardt algorithm to minimise residual sum of squares.\\
 
-The default starting values and two-stage optimisation worked well for our thermogravimetric decay dataset for 29 plant species, encompassing herbaceous, graminoid, as well as woody species. Although this result is encouraging it is not altogether surprising because these data were pyrolysed using the same TGA-FTIR instrument. For this reason, the package was also tested on thermogravimetric data processed from a different instrument, as well as plants from marine ecosystems. Default settings produced well-fit curves for leaf samples from the seagrass species \textit{Thalassia testudinum}, and rhizome and root samples from the seagrass species \textit{Zostera marina} \citetext{Fig.~\ref{Fig:stt_examples}; data for both from \citealp{trevathan-tackett2015}}.\\
+The default starting values and two-stage optimisation worked well for our thermogravimetric decay dataset for 29 plant species, encompassing herbaceous, graminoid, as well as woody species. Although this result is encouraging it is not altogether surprising because these data were pyrolysed using the same TGA-FTIR instrument. For this reason, the package was also tested on thermogravimetric data processed from a different instrument, as well as plants from marine ecosystems. Default settings produced well-fit curves for leaf samples from the seagrass species \textit{Thalassia testudinum}, and rhizome and root samples from the seagrass species \textit{Zostera marina} \citetext{Fig.~\ref{Fig:stt_examples}; data for both from \citealp{trevathan-tackett2015}}. \\
 
-<<echo = FALSE, fig.cap = '\\label{Fig:stt_examples} Mass loss and component estimation using default settings for test samples.', out.width = '.9\\linewidth', fig.align = 'center', fig.show = 'hold'>>=
-knitr::include_graphics('figs/default_tests.png')
+<<echo = FALSE, fig.cap = '\\label{Fig:stt_examples} Mass loss and component estimation using default settings for test samples: (a) \\textit{Thalassia testudinum} leaves; (b) \\textit{Zostera marina} rhizome; and (c) \\textit{Zostera marina} root.', out.width = '.7\\linewidth', fig.align = 'center', fig.show = 'hold'>>=
+# knitr::include_graphics('figs/default_tests.png')
+test_plots()
 @
 
-Default \verb|mixchar| settings did not, however, perfectly identify the fourth peak in the deconvolution of macroalgae species \textit{Ecklonia radiata} blades \citetext{Fig.~\ref{Fig:Er}a; \citealp{trevathan-tackett2015}}. In this case, we can use the option to specify our own starting values, with the \verb|start_vec|, \verb|lower_vec|, and \verb|upper_vec| arguments, in order to better guide the model (Fig.~\ref{Fig:Er}b).\\
+Despite the broad range of testing of \verb|mixchar|, users may still find they need to explore the literature for reasonable estimates of starting values for their study species. Default settings did not, for example, did not identify the fourth peak in the deconvolution of macroalgae species \textit{Ecklonia radiata} blades \citetext{Fig.~\ref{Fig:Er}a; \citealp{trevathan-tackett2015}}. In this case, we can use the option to specify our own starting values, with the \verb|start_vec|, \verb|lower_vec|, and \verb|upper_vec| arguments, in order to better guide the model (Fig.~\ref{Fig:Er}b).\\
 
 <<echo = FALSE>>=
-source('my_functions.R')
-e.radiata <- process_test_samples('data/Er_blade.txt')
+e.radiata <- process_test_samples('../data/Er_blade.txt')
 e.radiata_output <- deconvolve(e.radiata)
 @
 
 <<>>=
+# code given for reference only
+
 start_vec <- c(0.002, -0.15, 250, 50,           # for hemicellulose 1
                0.003, -0.15, 310, 50,           # for hemicellulose 2
                0.006, -0.15, 350, 30,           # for cellulose
@@ -200,8 +212,9 @@ e.radiata_decon <- deconvolve(e.radiata,
                               upper_temp = 600)
 @
 
-<<echo = FALSE, fig.cap = '\\label{Fig:Er} Component estimation for \\textit{Ecklonia radiata} blades with default (a) and specified starting values (b).', out.width = '.9\\linewidth', fig.align = 'center', fig.show = 'hold'>>=
-knitr::include_graphics('figs/eradiata.png')
+<<echo = FALSE, fig.cap = '\\label{Fig:Er} Component estimation for \\textit{Ecklonia radiata} blades with default (a) and specified starting values (b).', out.width = '.8\\linewidth', fig.align = 'center', fig.show = 'hold'>>=
+# knitr::include_graphics('figs/eradiata.png') 
+e.rad()
 @
 
 \textit{Component weights}\\
@@ -268,8 +281,9 @@ component_weights(output_juncus)
 \textbf{\textit{Plotting}}\\
 Plotting the output of the \verb|deconvolve| function shows the underlying DTG data, the overall mixture model curve, as well as the component peaks of the deconvolution (Fig.~\ref{Fig:decon}). The default plot is in black and white, but a colour version that uses colour-blind friendly \verb|viridis| colours \citep{viridis} is available by specifying \verb|bw = FALSE|.
 
-<<echo = FALSE, fig.cap = '\\label{Fig:decon} Deconvolution of \\textit{Juncus amabilis} example dataset. Mass loss data overlaid with output of deconvolution. Rate of mass loss scaled by initial mass of sample.', asp = 1, out.width = '.7\\linewidth', fig.align = 'center'>>=
-knitr::include_graphics('figs/deconvolved.png')
+<<echo = FALSE, fig.cap = '\\label{Fig:decon} Deconvolution of \\textit{Juncus amabilis} example dataset. Mass loss data overlaid with output of deconvolution. Rate of mass loss scaled by initial mass of sample.', asp = 1, out.width = '.5\\linewidth', fig.align = 'center'>>=
+# knitr::include_graphics('figs/deconvolved.png')
+plot(output_juncus, bw = FALSE)
 @
 
 The Fraser-Suzuki family of functions are exported (Table~\ref{Tab:functions}) to allow users to create their own plots from the model outputs in conjunction with the parameter estimates, accessed as follows:
@@ -360,14 +374,14 @@ This package was created by Saras Windecker and Dr. Nick Golding.
 R
 
 \section*{(3) Reuse potential}
-This package was designed with both the user and developer in mind. There are several vignettes available with the package and on the package website (\url{https://smwindecker.github.io/mixchar/}) facilitating exploration of package functionality. We expect that this package will be useful to researchers already using thermogravimetric analysis for biomass component estimation, as well as to functional ecologists seeking to test out this approach as an alternative to wet chemistry methods. For all users, this method improves on most current softwares available to them, as it is fully open-source and transparent.\\
+This package was designed with both the user and developer in mind. There are several vignettes available with the package and on the package website (\url{https://smwindecker.github.io/mixchar/}) facilitating exploration of package functionality. We expect that this package will be useful to researchers already using thermogravimetric analysis for biomass component estimation, as well as to functional ecologists seeking to test out this approach as an alternative to wet chemistry methods. For all users, this method improves on most current software available to them, as it is fully open-source and transparent.\\
 
 Finite mixture models are used to cluster continuous multivariate data. Statistical inference of mixture models is notoriously difficult because of their flexibility \citep{mclachlan1988}. This is especially true for the Fraser-Suzuki function, which has an additional parameter compared to a Gaussian distribution. Many combinations of peaks can create the same overall derivative thermogravimetric curve, and so informed starting values are necessary as they can substantially affect fit. To use \verb|mixchar| well, we need in some cases to modify the default starting values.\\
 
 For those who wish to contribute to the package, it is hosted on Github. Contributors can log issues, for example concerning alternative data formats, via the issues tracker (\url{https://github.com/smwindecker/mixchar/issues}) or submit a pull request to add functionality to the package.
 
 \section*{Acknowledgements}
-The authors would like to thank Dr. Nick Tierney and David Wilkinson for reviewing an early version of the package as well as CRAN reviewers for useful additions. We would like to thank volunteers Paula Sanchez, Abbey Kinnish, Kelsey Johnson, Madeline Brenker, and Urtzi Enriquez Urzelai for their assistance in the field collecting plant specimens. We would also like to thank the University of Melbourne Department of Chemical and Biomolecular Engineering for access to and training on the TGA-FTIR. Plant samples used to build and verify the model were conducted under Victorian Department of Environment, Land, Water and Planning Permit No 10007429.
+The authors would like to thank Dr. Nick Tierney and Dr. David Wilkinson for reviewing an early version of the package as well as CRAN reviewers for useful additions. We would like to thank volunteers Paula Sanchez, Abbey Kinnish, Kelsey Johnson, Madeline Brenker, and Urtzi Enriquez Urzelai for their assistance in the field collecting plant specimens. We would also like to thank the University of Melbourne Department of Chemical and Biomolecular Engineering for access to and training on the TGA-FTIR. Plant samples used to build and verify the model were conducted under Victorian Department of Environment, Land, Water and Planning Permit No 10007429.
 
 \section*{Funding statement}
 The authors would like to acknowledge the generous support we received from the Australian Research Council Centre of Excellence for Environmental Decisions, the Holsworth Wildlife Reseach Endowment \& The Ecological Society of Australia, and from University of Melbourne, which provided the primary author with a Melbourne International Research Scholarship and a Melbourne International Fee Remission Scholarship from University of Melbourne.
