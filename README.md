@@ -4,7 +4,7 @@ This repository contains all the code used in the manuscript associated with the
 
 ## Running the code
 
-All analyses were done in `R`, and the paper is written in LaTeX. All code needed to reproduce the submitted products is included in this repository. To reproduce this paper, run the code contained in the `analysis.R` file. Figures will be output to a directory called `figs` and the paper and supplementary materials to the directory `ms`.
+All analyses were done in `R`, and the paper is written in LaTeX. All code needed to reproduce the submitted products is included in this repository. To reproduce this paper, run the code contained in the `analysis.R` file. The paper and supplementary materials will be created in the directory `ms`.
 
 If you are reproducing these results on your own machine, first download the code and then install the required packages, listed under `Depends` in the `DESCRIPTION` file. This can be achieved by opening the Rstudio project and running:
 
@@ -24,7 +24,6 @@ To ensure long-term [computational reproducibility](https://www.britishecologica
 - `data/`: Raw data for demonstration
 - `my_functions.R`: File with functions for the analysis and figures in the manuscript
 - `ms/`: directory containing manuscript in LaTeX and accompanying style files 
-- `figs/`: figures built with the R scripts for the manuscript
 - `DESCRIPTION`: A machine-readable [compendium]() file containing key metadata and dependencies 
 - `LICENSE`: License for the materials
 - `Dockerfile` & `.binder/Dockerfile`: files used to generate docker containers for long-term reproducibility
