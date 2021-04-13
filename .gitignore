@@ -7,3 +7,10 @@ presentation/
 *.tex
 *.pdf
 *.log
+.rstudio/
+*/.DS_Store
+ms/resubmission.docx
+.TinyTeX/
+bin/
+.local/
+.config/

@@ -1,4 +1,4 @@
-FROM rocker/verse:3.6.1
+FROM rocker/verse:4.0.4
 LABEL maintainer="Saras Windecker"
 LABEL email="saras.windecker@gmail.com"
 

@@ -15,8 +15,6 @@ remotes::install_deps()
 
 You can access an interactive RStudio session with the required software pre-installed by opening a container hosted by [Binder](http://mybinder.org): 
 
-[![Launch Rstudio Binder](http://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/smwindecker/mixchar_manuscript/master?urlpath=rstudio)
-
 To ensure long-term [computational reproducibility](https://www.britishecologicalsociety.org/wp-content/uploads/2017/12/guide-to-reproducible-code.pdf) of this work, we have created a [Docker](http://dockerhub.com) image to enable others to reproduce these results on their local machines using the same software and versions we used to conduct the original analysis. Instructions for reproducing this work using the docker image are available at the bottom of the page. 
 
 ## Material included in the repository include:
@@ -26,7 +24,7 @@ To ensure long-term [computational reproducibility](https://www.britishecologica
 - `ms/`: directory containing manuscript in LaTeX and accompanying style files 
 - `DESCRIPTION`: A machine-readable [compendium]() file containing key metadata and dependencies 
 - `LICENSE`: License for the materials
-- `Dockerfile` & `.binder/Dockerfile`: files used to generate docker containers for long-term reproducibility
+- `Dockerfile`: file to generate docker container for long-term reproducibility
 
 ## Running via Docker
 
@@ -54,16 +52,16 @@ The code above initialises a docker container, which runs an RStudio session acc
 
 ### NOTE: Building the docker image
 
-For posterity, the docker image was built off [`rocker/verse:3.5.1` container](https://hub.docker.com/r/rocker/verse) via the following command, in a terminal contained within the downloaded repo:
+For posterity, the docker image was built off [`rocker/verse:4.0.4` container](https://hub.docker.com/r/rocker/verse) via the following command, in a terminal contained within the downloaded repo:
 
 ```
 docker build -t smwindecker/mixchar_manuscript .
 ```
 
-and was then pushed to [dockerhub](https://cloud.docker.com/u/traitecoevo/repository/docker/smwindecker/mixchar_manuscript). The image used by binder builds off this container, adding extra features needed by binder, as described in [rocker/binder](https://hub.docker.com/r/rocker/binder/dockerfile).
+and was then pushed to [dockerhub](https://cloud.docker.com/u/traitecoevo/repository/docker/smwindecker/mixchar_manuscript). 
 
 ## Problems?
 
-If you have any problems getting the workflow to run please create an [issue](https://github.com/smwindecker/mixchar_manuscript/issues) and I will endevour to remedy it ASAP.
+If you have any problems getting the workflow to run please create an [issue](https://github.com/smwindecker/mixchar_manuscript/issues) and I will endeavor to remedy it ASAP.
 
 Special thank you to [James Camac](https://github.com/jscamac) and [Daniel Falster](https://github.com/dfalster) for assistance in setting up this reproducible workflow. 
